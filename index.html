@@ -642,7 +642,18 @@ function generateBadgesHTML(messageData) {
     let isDraggingScrollbar = false;
     let interactionResetTimer;
 
-    // --- CREATE THE "CHAT PAUSED" BUTTON ---
+	function hideNewChatLines(mutationsList) {
+    mutationsList.forEach(mutation => {
+        if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.classList.contains('chat_line') && node.classList.contains('animate')) {
+                    node.style.display = 'none';
+                }
+            });
+        }
+    });
+}
+	    const observer2 = new MutationObserver(hideNewChatLines);
     const pauseButton = document.createElement('button');
     const img = document.createElement("img");
     img.src = "./pause.jpg"; // Make sure this path is correct
@@ -739,12 +750,17 @@ function generateBadgesHTML(messageData) {
             if (userHasScrolledUp) {
                 userHasScrolledUp = false;
                 pauseButton.style.display = 'none';
+		     observer.disconnect();
+		    document.querySelectorAll('.chat_line.animate').forEach(element => {
+  element.style.display = '';
+});
             }
         } else if (!isAtBottom) {
             // If we are anywhere else, we pause.
             if (!userHasScrolledUp) {
                 userHasScrolledUp = true;
                 pauseButton.style.display = 'block';
+		    observer2.observe(document.body, { childList: true, subtree: true });
             }
         }
     }
