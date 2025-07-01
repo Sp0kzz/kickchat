@@ -155,6 +155,7 @@ opacity:0;
     </div>
     <script src="https://unpkg.com/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
     <script>
+	    let userHasScrolledUp=!1;
 const urlParams = new URLSearchParams(window.location.search);
 let user = urlParams.get("user");
 const animate = urlParams.get("animate");
@@ -512,8 +513,15 @@ banInfo.className='ban-info';
             originalContent.style.opacity = '0.7';
         }
     });
+	if (!userHasScrolledUp) {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'  // optional: adds smooth scrolling
+    });
+}
 }
 function handleUnban(unbanData) {
+	
     const username = unbanData.user.username;
     const unbannedBy = unbanData.unbanned_by.username;
     
@@ -541,7 +549,12 @@ setTimeout(() => msg.style.background = '', 1000);
     
     // Add to top of chat (or use appendChild() for bottom)
     document.getElementById('chat-container').appendChild(notice);
-    
+  if (!userHasScrolledUp) {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'  // optional: adds smooth scrolling
+    });
+}
     console.log(`${username} was unbanned by ${unbannedBy}`);
 }
 // Helper function to convert minutes to human-readable format
@@ -622,9 +635,8 @@ function generateBadgesHTML(messageData) {
         }
     });
     return badgesHTML;
+	let interactionResetTimer,isUserInteracting=!1,isDraggingScrollbar=!1;const pauseButton=document.createElement("button"),img=document.createElement("img");function scrollToBottom(e=!1){window.scrollTo({top:document.documentElement.scrollHeight,behavior:e?"smooth":"auto"})}function resumeChat(){userHasScrolledUp=!1,pauseButton.style.display="none",scrollToBottom(!0)}function handleChatUpdate(e){let t=!1;for(const n of e){if("childList"===n.type&&n.addedNodes.length>0)for(const e of n.addedNodes)if(1===e.nodeType&&e.classList.contains("chat_line")&&e.classList.contains("animate")){t=!0;break}if(t)break}t&&!userHasScrolledUp&&scrollToBottom(!1)}function handleScroll(){if(!isUserInteracting)return;clearTimeout(interactionResetTimer),interactionResetTimer=setTimeout(()=>{isDraggingScrollbar||(isUserInteracting=!1)},250);if(document.querySelectorAll(".chat_line.animate").length<10)return;const e=window.innerHeight+Math.ceil(window.scrollY)>=document.documentElement.scrollHeight;e&&!isDraggingScrollbar?userHasScrolledUp&&(userHasScrolledUp=!1,pauseButton.style.display="none"):e||userHasScrolledUp||(userHasScrolledUp=!0,pauseButton.style.display="block")}function flagUserInteraction(){isUserInteracting=!0}img.src="./pause.jpg",img.style.verticalAlign="middle",img.style.width="21px",img.style.height="21px",img.style.marginRight="10px",pauseButton.appendChild(img),pauseButton.appendChild(document.createTextNode("Chat Paused - Click to resume")),Object.assign(pauseButton.style,{position:"fixed",bottom:"30px",left:"50%",transform:"translateX(-50%)",width:"80%",padding:"10px 20px",fontSize:"18px",fontWeight:"600",background:"rgba(0, 0, 0, 0.85)",color:"white",display:"none",zIndex:"1000",borderRadius:"25px",border:"2px solid #00ff00",cursor:"pointer",boxShadow:"0 4px 12px rgba(0,0,0,0.4)"}),document.body.appendChild(pauseButton);const observer=new MutationObserver(handleChatUpdate);function handleDragStart(){isUserInteracting=!0,isDraggingScrollbar=!0}function handleDragEnd(){isDraggingScrollbar=!1,handleScroll()}observer.observe(document.body,{childList:!0,subtree:!0}),pauseButton.addEventListener("click",resumeChat),window.addEventListener("scroll",handleScroll,{passive:!0}),window.addEventListener("wheel",flagUserInteraction,{passive:!0}),window.addEventListener("keydown",e=>{["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"].includes(e.key)&&flagUserInteraction()},{passive:!0}),window.addEventListener("mousedown",handleDragStart,{passive:!0}),window.addEventListener("touchstart",handleDragStart,{passive:!0}),window.addEventListener("mouseup",handleDragEnd,{passive:!0}),window.addEventListener("touchend",handleDragEnd,{passive:!0}),scrollToBottom(!1);
+
 }    </script>
 </body>
-<script>
-let interactionResetTimer,userHasScrolledUp=!1,isUserInteracting=!1,isDraggingScrollbar=!1;const pauseButton=document.createElement("button"),img=document.createElement("img");function scrollToBottom(e=!1){window.scrollTo({top:document.documentElement.scrollHeight,behavior:e?"smooth":"auto"})}function resumeChat(){userHasScrolledUp=!1,pauseButton.style.display="none",scrollToBottom(!0)}function handleChatUpdate(e){let t=!1;for(const n of e){if("childList"===n.type&&n.addedNodes.length>0)for(const e of n.addedNodes)if(1===e.nodeType&&e.classList.contains("chat_line")&&e.classList.contains("animate")){t=!0;break}if(t)break}t&&!userHasScrolledUp&&scrollToBottom(!1)}function handleScroll(){if(!isUserInteracting)return;clearTimeout(interactionResetTimer),interactionResetTimer=setTimeout(()=>{isDraggingScrollbar||(isUserInteracting=!1)},250);if(document.querySelectorAll(".chat_line.animate").length<10)return;const e=window.innerHeight+Math.ceil(window.scrollY)>=document.documentElement.scrollHeight;e&&!isDraggingScrollbar?userHasScrolledUp&&(userHasScrolledUp=!1,pauseButton.style.display="none"):e||userHasScrolledUp||(userHasScrolledUp=!0,pauseButton.style.display="block")}function flagUserInteraction(){isUserInteracting=!0}img.src="./pause.jpg",img.style.verticalAlign="middle",img.style.width="21px",img.style.height="21px",img.style.marginRight="10px",pauseButton.appendChild(img),pauseButton.appendChild(document.createTextNode("Chat Paused - Click to resume")),Object.assign(pauseButton.style,{position:"fixed",bottom:"30px",left:"50%",transform:"translateX(-50%)",width:"80%",padding:"10px 20px",fontSize:"18px",fontWeight:"600",background:"rgba(0, 0, 0, 0.85)",color:"white",display:"none",zIndex:"1000",borderRadius:"25px",border:"2px solid #00ff00",cursor:"pointer",boxShadow:"0 4px 12px rgba(0,0,0,0.4)"}),document.body.appendChild(pauseButton);const observer=new MutationObserver(handleChatUpdate);function handleDragStart(){isUserInteracting=!0,isDraggingScrollbar=!0}function handleDragEnd(){isDraggingScrollbar=!1,handleScroll()}observer.observe(document.body,{childList:!0,subtree:!0}),pauseButton.addEventListener("click",resumeChat),window.addEventListener("scroll",handleScroll,{passive:!0}),window.addEventListener("wheel",flagUserInteraction,{passive:!0}),window.addEventListener("keydown",e=>{["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"].includes(e.key)&&flagUserInteraction()},{passive:!0}),window.addEventListener("mousedown",handleDragStart,{passive:!0}),window.addEventListener("touchstart",handleDragStart,{passive:!0}),window.addEventListener("mouseup",handleDragEnd,{passive:!0}),window.addEventListener("touchend",handleDragEnd,{passive:!0}),scrollToBottom(!1);
-</script>
 </html>
