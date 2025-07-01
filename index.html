@@ -635,139 +635,160 @@ function generateBadgesHTML(messageData) {
         }
     });
     return badgesHTML;
-	let interactionResetTimer;
-let isUserInteracting = false;
-let isDraggingScrollbar = false;
-let userHasScrolledUp = false; // Added missing variable declaration
+    let isUserInteracting = false;
+    // This is the key flag to track a continuous drag action.
+    let isDraggingScrollbar = false;
+    let interactionResetTimer;
 
-const pauseButton = document.createElement("button");
-const img = document.createElement("img");
+    // --- CREATE THE "CHAT PAUSED" BUTTON ---
+    const pauseButton = document.createElement('button');
+    const img = document.createElement("img");
+    img.src = "./pause.jpg"; // Make sure this path is correct
+    img.style.verticalAlign = "middle";
+    img.style.width = "21px";
+    img.style.height = "21px";
+    img.style.marginRight = "10px";
 
-function scrollToBottom(smooth = false) {
-    window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: smooth ? "smooth" : "auto"
+    pauseButton.appendChild(img);
+    pauseButton.appendChild(document.createTextNode('Chat Paused - Click to resume'));
+    Object.assign(pauseButton.style, {
+        position: 'fixed',
+        bottom: '30px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '80%',
+        padding: '10px 20px',
+        fontSize: '18px',
+        fontWeight: '600',
+        background: 'rgba(0, 0, 0, 0.85)',
+        color: 'white',
+        display: 'none',
+        zIndex: '1000',
+        borderRadius: '25px',
+        border: '2px solid #00ff00',
+        cursor: 'pointer',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.4)'
     });
-}
+    document.body.appendChild(pauseButton);
 
-function resumeChat() {
-    userHasScrolledUp = false;
-    pauseButton.style.display = "none";
-    scrollToBottom(true);
-}
 
-function handleChatUpdate(mutations) {
-    let hasNewAnimatedMessage = false;
-    
-    for (const mutation of mutations) {
-        if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-            for (const node of mutation.addedNodes) {
-                if (node.nodeType === 1 && 
-                    node.classList.contains("chat_line") && 
-                    node.classList.contains("animate")) {
-                    hasNewAnimatedMessage = true;
-                    break;
+    // --- FUNCTIONS ---
+
+    function scrollToBottom(smooth = false) {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
+    }
+
+    function resumeChat() {
+        userHasScrolledUp = false;
+        pauseButton.style.display = 'none';
+        scrollToBottom(true);
+    }
+
+    function handleChatUpdate(mutationsList) {
+        let hasNewMessage = false;
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                 for (const node of mutation.addedNodes) {
+                    if (node.nodeType === 1 && node.classList.contains('chat_line') && node.classList.contains('animate')) {
+                        hasNewMessage = true;
+                        break;
+                    }
                 }
             }
+            if (hasNewMessage) break;
         }
-        if (hasNewAnimatedMessage) break;
-    }
-    
-    if (hasNewAnimatedMessage && !userHasScrolledUp) {
-        scrollToBottom(false);
-    }
-}
 
-function handleScroll() {
-    if (!isUserInteracting) return;
-    
-    clearTimeout(interactionResetTimer);
-    interactionResetTimer = setTimeout(() => {
-        if (!isDraggingScrollbar) {
+        if (hasNewMessage && !userHasScrolledUp) {
+            scrollToBottom(false);
+        }
+    }
+
+    function handleScroll() {
+        // This is a vital guard. If our code isn't expecting a user scroll, ignore it.
+        // This prevents programmatic scrolls from triggering pause/resume.
+        if (!isUserInteracting) {
+            return;
+        }
+
+        // This timer is now ONLY for non-drag interactions (wheel, keyboard).
+        clearTimeout(interactionResetTimer);
+        interactionResetTimer = setTimeout(() => {
+            // If the user is dragging, the interaction is NOT over. Do nothing.
+            if (isDraggingScrollbar) {
+                return;
+            }
+            // If it was a wheel/key scroll, the interaction is now over.
             isUserInteracting = false;
+        }, 250); // Increased delay slightly for more tolerance
+
+        const chatLineCount = document.querySelectorAll('.chat_line.animate').length;
+        if (chatLineCount < MIN_MESSAGES_TO_PAUSE) {
+            return;
         }
-    }, 250);
 
-    if (document.querySelectorAll(".chat_line.animate").length < 10) return;
-    
-    const isNearBottom = window.innerHeight + Math.ceil(window.scrollY) >= 
-                        document.documentElement.scrollHeight;
-    
-    if (isNearBottom && !isDraggingScrollbar) {
-        if (userHasScrolledUp) {
-            userHasScrolledUp = false;
-            pauseButton.style.display = "none";
+        const isAtBottom = (window.innerHeight + Math.ceil(window.scrollY)) >= document.documentElement.scrollHeight;
+
+        // The core logic is now simple again.
+        // We only resume if at the bottom AND not in the middle of a drag.
+        if (isAtBottom && !isDraggingScrollbar) {
+            if (userHasScrolledUp) {
+                userHasScrolledUp = false;
+                pauseButton.style.display = 'none';
+            }
+        } else if (!isAtBottom) {
+            // If we are anywhere else, we pause.
+            if (!userHasScrolledUp) {
+                userHasScrolledUp = true;
+                pauseButton.style.display = 'block';
+            }
         }
-    } else if (!isNearBottom && !userHasScrolledUp) {
-        userHasScrolledUp = true;
-        pauseButton.style.display = "block";
     }
-}
 
-function flagUserInteraction() {
-    isUserInteracting = true;
-}
-
-function handleDragStart() {
-    isUserInteracting = true;
-    isDraggingScrollbar = true;
-}
-
-function handleDragEnd() {
-    isDraggingScrollbar = false;
-    handleScroll();
-}
-
-// Set up pause button
-img.src = "./pause.jpg";
-img.style.verticalAlign = "middle";
-img.style.width = "21px";
-img.style.height = "21px";
-img.style.marginRight = "10px";
-
-pauseButton.appendChild(img);
-pauseButton.appendChild(document.createTextNode("Chat Paused - Click to resume"));
-
-Object.assign(pauseButton.style, {
-    position: "fixed",
-    bottom: "30px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: "80%",
-    padding: "10px 20px",
-    fontSize: "18px",
-    fontWeight: "600",
-    background: "rgba(0, 0, 0, 0.85)",
-    color: "white",
-    display: "none",
-    zIndex: "1000",
-    borderRadius: "25px",
-    border: "2px solid #00ff00",
-    cursor: "pointer",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.4)"
-});
-
-document.body.appendChild(pauseButton);
-
-// Set up observers and event listeners
-const observer = new MutationObserver(handleChatUpdate);
-observer.observe(document.body, { childList: true, subtree: true });
-
-pauseButton.addEventListener("click", resumeChat);
-window.addEventListener("scroll", handleScroll, { passive: true });
-window.addEventListener("wheel", flagUserInteraction, { passive: true });
-window.addEventListener("keydown", (e) => {
-    if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(e.key)) {
-        flagUserInteraction();
+    function flagUserInteraction() {
+        isUserInteracting = true;
     }
-}, { passive: true });
-window.addEventListener("mousedown", handleDragStart, { passive: true });
-window.addEventListener("touchstart", handleDragStart, { passive: true });
-window.addEventListener("mouseup", handleDragEnd, { passive: true });
-window.addEventListener("touchend", handleDragEnd, { passive: true });
 
-// Initial scroll to bottom
-scrollToBottom(false);
+    // --- SETUP OBSERVERS AND EVENT LISTENERS ---
+
+    const observer = new MutationObserver(handleChatUpdate);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    pauseButton.addEventListener('click', resumeChat);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Handle non-drag interactions
+    window.addEventListener('wheel', flagUserInteraction, { passive: true });
+    window.addEventListener('keydown', (e) => {
+        if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) {
+            flagUserInteraction();
+        }
+    }, { passive: true });
+
+    // Use specific listeners for the start and end of a drag/touch action
+    function handleDragStart() {
+        isUserInteracting = true;
+        isDraggingScrollbar = true;
+    }
+
+    function handleDragEnd() {
+        isDraggingScrollbar = false;
+        // After letting go, we MUST re-run the scroll logic to check our final position.
+        // This is what makes it resume correctly if you release at the bottom.
+        handleScroll();
+    }
+
+    window.addEventListener('mousedown', handleDragStart, { passive: true });
+    window.addEventListener('touchstart', handleDragStart, { passive: true });
+
+    window.addEventListener('mouseup', handleDragEnd, { passive: true });
+    window.addEventListener('touchend', handleDragEnd, { passive: true });
+
+    // --- INITIAL SCROLL ---
+    scrollToBottom(false);
 </script>
 </body>
 </html>
