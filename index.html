@@ -727,7 +727,7 @@ function generateBadgesHTML(messageData) {
         }, 250); // Increased delay slightly for more tolerance
 
         const chatLineCount = document.querySelectorAll('.chat_line.animate').length;
-        if (chatLineCount < MIN_MESSAGES_TO_PAUSE) {
+        if (chatLineCount < 10) {
             return;
         }
 
