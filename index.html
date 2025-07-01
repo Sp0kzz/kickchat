@@ -333,6 +333,10 @@ function parseMessage(rawData) {
             console.log("Chat Cleared:", eventData);
             handleClear();
             break;
+		     case "App\\Events\\UserUnbannedEvent":  // New case for unbans
+        console.log("User Unbanned:", eventData);
+        handleUnban(eventData);
+        break;
         // Ignore internal pusher events like 'pusher:pong'
         case "pusher:pong":
             break; 
@@ -481,15 +485,12 @@ function handleBan(banData) {
     userMessages.forEach(msg => {
         // Base styling
         msg.style.background = '#8B0000';
-        msg.style.color = 'white';
-        msg.style.padding = '8px';
-        msg.style.borderRadius = '4px';
 
         // Create ban info element
         const banInfo = document.createElement('div');
         banInfo.style.fontSize = '0.8em';
         banInfo.style.marginTop = '4px';
-
+banInfo.className='ban-info';
         if (banData.permanent) {
             banInfo.innerHTML = `🚫 <strong>PERMANENTLY BANNED</strong> by ${bannedBy}`;
         } else {
@@ -512,7 +513,37 @@ function handleBan(banData) {
         }
     });
 }
+function handleUnban(unbanData) {
+    const username = unbanData.user.username;
+    const unbannedBy = unbanData.unbanned_by.username;
+    
+    // Find all previously banned messages
+    const userMessages = document.querySelectorAll(`[data-sender="${username}"]`);
+    
+    userMessages.forEach(msg => {
+        // Remove ban styling
+        msg.style.background = '';
+        msg.style.opacity = '';
+        msg.style.transition = 'background 1s';
+msg.style.background = '#e8f5e9'; // Light green
+setTimeout(() => msg.style.background = '', 1000);
+        // Remove ban info if exists
+        const banInfo = msg.querySelector('.ban-info');
+        if (banInfo) {
+            banInfo.remove();
+        }
+        
 
+    });
+      const notice = document.createElement('div');
+    notice.className = 'system-notice';
+    notice.innerHTML =  `✅ User <strong>${unbanData.user.username}</strong> was unbanned by ${unbanData.unbanned_by.username}`;
+    
+    // Add to top of chat (or use appendChild() for bottom)
+    document.getElementById('chat-container').appendChild(notice);
+    
+    console.log(`${username} was unbanned by ${unbannedBy}`);
+}
 // Helper function to convert minutes to human-readable format
 function formatDuration(minutes) {
     if (!minutes) return "0 minutes";
