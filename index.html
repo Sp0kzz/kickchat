@@ -457,22 +457,28 @@ function handleMessage(messageData) {
  * Handles the message deletion event.
  * @param {object} deleteData - The data for the deleted message.
  */
+/**
+ * Handles message deletion by highlighting the message.
+ * @param {object} deleteData - The data containing message info to delete.
+ */
 function handleDelete(deleteData) {
     const messageId = deleteData.message.id;
     const messageElement = document.querySelector(`[data-id="${messageId}"]`);
     if (messageElement) {
-        messageElement.style.background='yellow';
+        messageElement.style.background = 'yellow';
     }
 }
 
 /**
- * Handles the user ban event by removing all of their messages.
+ * Handles the user ban event by highlighting all of their messages.
  * @param {object} banData - The data for the banned user.
  */
 function handleBan(banData) {
     const bannedUsername = banData.user.username;
     const userMessages = document.querySelectorAll(`[data-sender="${bannedUsername}"]`);
-    userMessages.forEach(msg => msg.style.background='red';);
+    userMessages.forEach(msg => {
+        msg.style.background = 'red';
+    });
 }
 
 /**
