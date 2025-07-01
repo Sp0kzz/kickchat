@@ -475,10 +475,59 @@ function handleDelete(deleteData) {
  */
 function handleBan(banData) {
     const bannedUsername = banData.user.username;
+    const bannedBy = banData.banned_by.username;
     const userMessages = document.querySelectorAll(`[data-sender="${bannedUsername}"]`);
+
     userMessages.forEach(msg => {
-        msg.style.background = 'red';
+        // Base styling
+        msg.style.background = '#8B0000';
+        msg.style.color = 'white';
+        msg.style.padding = '8px';
+        msg.style.borderRadius = '4px';
+
+        // Create ban info element
+        const banInfo = document.createElement('div');
+        banInfo.style.fontSize = '0.8em';
+        banInfo.style.marginTop = '4px';
+
+        if (banData.permanent) {
+            banInfo.innerHTML = `🚫 <strong>PERMANENTLY BANNED</strong> by ${bannedBy}`;
+        } else {
+            // Calculate human-readable duration
+            const durationText = formatDuration(banData.duration);
+            const expiresAt = new Date(banData.expires_at);
+            const expiresText = expiresAt.toLocaleString();
+            
+            banInfo.innerHTML = `⏳ <strong>TEMPORARY BAN</strong> (${durationText}) by ${bannedBy}<br>
+                               ⌛ Until: ${expiresText}`;
+        }
+
+        // Add to message
+        msg.appendChild(banInfo);
+        
+        // Strike through original content
+        const originalContent = msg.firstChild;
+        if (originalContent) {
+            originalContent.style.textDecoration = 'line-through';
+            originalContent.style.opacity = '0.7';
+        }
     });
+}
+
+// Helper function to convert minutes to human-readable format
+function formatDuration(minutes) {
+    if (!minutes) return "0 minutes";
+    
+    const days = Math.floor(minutes / 1440);
+    const hours = Math.floor((minutes % 1440) / 60);
+    const mins = minutes % 60;
+    
+    let parts = [];
+    if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
+    if (hours > 0) parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
+    if (mins > 0 || parts.length === 0) parts.push(`${mins} minute${mins !== 1 ? 's' : ''}`);
+    
+    return parts.join(' ');
 }
 
 /**
