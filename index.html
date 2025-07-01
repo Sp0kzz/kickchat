@@ -498,8 +498,7 @@ function handleBan(banData) {
             const expiresAt = new Date(banData.expires_at);
             const expiresText = expiresAt.toLocaleString();
             
-            banInfo.innerHTML = `⏳ <strong>TEMPORARY BAN</strong> (${durationText}) by ${bannedBy}<br>
-                               ⌛ Until: ${expiresText}`;
+            banInfo.innerHTML = `⏳ <strong>TEMPORARY BAN</strong> (${durationText}) by ${bannedBy}`;
         }
 
         // Add to message
