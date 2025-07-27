@@ -642,7 +642,7 @@ function generateBadgesHTML(messageData) {
     let isDraggingScrollbar = false;
     let interactionResetTimer;
 
-	function hideNewChatLines(mutationsList) {
+	/*function hideNewChatLines(mutationsList) {
     mutationsList.forEach(mutation => {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(node => {
@@ -652,8 +652,8 @@ function generateBadgesHTML(messageData) {
             });
         }
     });
-}
-	    const observer2 = new MutationObserver(hideNewChatLines);
+}*/
+	//    const observer2 = new MutationObserver(hideNewChatLines);
     const pauseButton = document.createElement('button');
     const img = document.createElement("img");
     img.src = "./pause.jpg"; // Make sure this path is correct
@@ -751,8 +751,8 @@ function generateBadgesHTML(messageData) {
                 userHasScrolledUp = false;
                 pauseButton.style.display = 'none';
 		     observer.disconnect();
-		    document.querySelectorAll('.chat_line.animate').forEach(element => {
-  element.style.display = '';
+		/*   document.querySelectorAll('.chat_line.animate').forEach(element => {
+/  element.style.display = '';*/
 });
             }
         } else if (!isAtBottom) {
@@ -760,7 +760,7 @@ function generateBadgesHTML(messageData) {
             if (!userHasScrolledUp) {
                 userHasScrolledUp = true;
                 pauseButton.style.display = 'block';
-		    observer2.observe(document.body, { childList: true, subtree: true });
+		//    observer2.observe(document.body, { childList: true, subtree: true });
             }
         }
     }
