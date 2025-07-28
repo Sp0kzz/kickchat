@@ -365,7 +365,7 @@ function handleMessage(messageData) {
     const timestamp = messageData.created_at;
 
     // Optional: Hide messages that are commands
-    if (hideCommands === "true" && content.startsWith('!')) {
+/*    if (hideCommands === "true" && content.startsWith('!')) {
         return;
     }
 
@@ -376,6 +376,7 @@ function handleMessage(messageData) {
             return;
         }
     }
+    */
 
     // Replace Kick's custom emote tags with <img> elements
     content = content.replace(/\[emote:(\d+):.*?\]/g, (match, emoteId) => {
@@ -687,7 +688,7 @@ function generateBadgesHTML(messageData) {
 
     // --- FUNCTIONS ---
 
-    function scrollToBottom(smooth = false) {
+    function scrollTotom(smooth = false) {
         window.scrollTo({
             top: document.documentElement.scrollHeight,
             behavior: smooth ? 'smooth' : 'auto'
@@ -746,7 +747,7 @@ function generateBadgesHTML(messageData) {
 
         // The core logic is now simple again.
         // We only resume if at the bottom AND not in the middle of a drag.
-        if (isAtBottom && !isDraggingScrollbar) {
+        if (isAttom && !isDraggingScrollbar) {
             if (userHasScrolledUp) {
                 userHasScrolledUp = false;
                 pauseButton.style.display = 'none';
