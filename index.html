@@ -161,8 +161,10 @@ let user = urlParams.get("user");
 const animate = urlParams.get("animate");
 const fade = urlParams.get("fade");
 const showBadges = urlParams.get("badges");
-const hideCommands = urlParams.get("commands");
-const hideBots = urlParams.get("bots");
+//const hideCommands = urlParams.get("commands");
+	 const hideCommands=false;
+//const hideBots = urlParams.get("bots");
+	   const hideBots=false;
 const textColor = '#' + urlParams.get("textcolor");
 const textSize = urlParams.get("textsize");
 const customTheme = urlParams.get("customtheme");
@@ -364,8 +366,8 @@ function handleMessage(messageData) {
     const username = messageData.sender.username;
     const timestamp = messageData.created_at;
 
-    // Optional: Hide messages that are commands
-/*    if (hideCommands === "true" && content.startsWith('!')) {
+   // Optional: Hide messages that are commands
+   if (hideCommands === "true" && content.startsWith('!')) {
         return;
     }
 
@@ -376,7 +378,7 @@ function handleMessage(messageData) {
             return;
         }
     }
-    */
+    
 
     // Replace Kick's custom emote tags with <img> elements
     content = content.replace(/\[emote:(\d+):.*?\]/g, (match, emoteId) => {
