@@ -749,7 +749,7 @@ function generateBadgesHTML(messageData) {
 
         // The core logic is now simple again.
         // We only resume if at the bottom AND not in the middle of a drag.
-        if (isAttom && !isDraggingScrollbar) {
+        if (isAtBottom && !isDraggingScrollbar) {
             if (userHasScrolledUp) {
                 userHasScrolledUp = false;
                 pauseButton.style.display = 'none';
