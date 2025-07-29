@@ -321,7 +321,7 @@ function parseMessage(rawData) {
     // Route the event to the correct handler based on the event name
     switch (pusherEvent.event) {
         case "App\\Events\\ChatMessageEvent":
-            console.log("Received Message:", eventData);
+     //       console.log("Received Message:", eventData);
             handleMessage(eventData);
             break;
         case "App\\Events\\MessageDeletedEvent":
