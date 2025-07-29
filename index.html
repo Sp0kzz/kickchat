@@ -453,7 +453,7 @@ function handleMessage(messageData) {
     
     // Limit the number of messages on screen to prevent performance issues
     const chatLines = document.querySelectorAll(".chat_line");
-    if (chatLines.length > 250) {
+    if (chatLines.length > 150) {
         chatLines[0].remove();
     }
 
@@ -725,7 +725,7 @@ function generateBadgesHTML(messageData) {
     function handleScroll() {
         // This is a vital guard. If our code isn't expecting a user scroll, ignore it.
         // This prevents programmatic scrolls from triggering pause/resume.
-        if (!isUserInteracting) {
+    /*    if (!isUserInteracting) {
             return;
         }
 
@@ -739,7 +739,7 @@ function generateBadgesHTML(messageData) {
             // If it was a wheel/key scroll, the interaction is now over.
             isUserInteracting = false;
         }, 250); // Increased delay slightly for more tolerance
-
+*/
         const chatLineCount = document.querySelectorAll('.chat_line.animate').length;
         if (chatLineCount < 10) {
             return;
@@ -802,12 +802,12 @@ function generateBadgesHTML(messageData) {
         handleScroll();
     }
 
-    window.addEventListener('mousedown', handleDragStart, { passive: true });
+/*    window.addEventListener('mousedown', handleDragStart, { passive: true });
     window.addEventListener('touchstart', handleDragStart, { passive: true });
 
     window.addEventListener('mouseup', handleDragEnd, { passive: true });
     window.addEventListener('touchend', handleDragEnd, { passive: true });
-
+*/
     // --- INITIAL SCROLL ---
     scrollToBottom(false);
 </script>
