@@ -699,8 +699,9 @@ function generateBadgesHTML(messageData) {
 
     function resumeChat() {
         userHasScrolledUp = false;
+		scrollToBottom(false);
         pauseButton.style.display = 'none';
-        scrollToBottom(true);
+        
     }
 
     function handleChatUpdate(mutationsList) {
@@ -813,3 +814,4 @@ function generateBadgesHTML(messageData) {
 </script>
 </body>
 </html>
+
