@@ -699,11 +699,11 @@ function generateBadgesHTML(messageData) {
 
     function resumeChat() {
         userHasScrolledUp = false;
-		scrollToBottom(false);
         pauseButton.style.display = 'none';
         observer2.disconnect();
 		   document.querySelectorAll('.chat_line.animate').forEach(element => {
  element.style.display = '';
+			   scrollToBottom(false);
 });
     }
 
@@ -817,5 +817,6 @@ function generateBadgesHTML(messageData) {
 </script>
 </body>
 </html>
+
 
 
