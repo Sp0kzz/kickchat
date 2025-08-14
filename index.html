@@ -701,7 +701,10 @@ function generateBadgesHTML(messageData) {
         userHasScrolledUp = false;
 		scrollToBottom(false);
         pauseButton.style.display = 'none';
-        
+        observer2.disconnect();
+		   document.querySelectorAll('.chat_line.animate').forEach(element => {
+ element.style.display = '';
+});
     }
 
     function handleChatUpdate(mutationsList) {
@@ -814,4 +817,5 @@ function generateBadgesHTML(messageData) {
 </script>
 </body>
 </html>
+
 
