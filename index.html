@@ -334,7 +334,7 @@ function parseMessage(rawData) {
             break;
         case "App\\Events\\ChatroomClearEvent":
             console.log("Chat Cleared:", eventData);
-            handleClear();
+          // /  handleClear();
             break;
 		     case "App\\Events\\UserUnbannedEvent":  // New case for unbans
         console.log("User Unbanned:", eventData);
@@ -510,11 +510,11 @@ banInfo.className='ban-info';
         msg.appendChild(banInfo);
         
         // Strike through original content
-        const originalContent = msg.firstChild;
+      /*  const originalContent = msg.firstChild;
         if (originalContent) {
-            originalContent.style.textDecoration = 'line-through';
-            originalContent.style.opacity = '0.7';
-        }
+         //   originalContent.style.textDecoration = 'line-through';
+          //  originalContent.style.opacity = '0.7';
+        }*/
     });
 	if (!userHasScrolledUp) {
     window.scrollTo({
@@ -750,7 +750,12 @@ function generateBadgesHTML(messageData) {
         }
 
         const isAtBottom = (window.innerHeight + Math.ceil(window.scrollY)) >= document.documentElement.scrollHeight;
-
+function scrollToBottom2(smooth = false) {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
+    }
         // The core logic is now simple again.
         // We only resume if at the bottom AND not in the middle of a drag.
         if (isAtBottom && !isDraggingScrollbar) {
@@ -760,6 +765,7 @@ function generateBadgesHTML(messageData) {
 		     observer2.disconnect();
 		   document.querySelectorAll('.chat_line.animate').forEach(element => {
  element.style.display = '';
+		scrollToBottom2(false);	   
 });
             }
         } else if (!isAtBottom) {
@@ -817,6 +823,7 @@ function generateBadgesHTML(messageData) {
 </script>
 </body>
 </html>
+
 
 
 
