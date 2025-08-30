@@ -749,7 +749,7 @@ function generateBadgesHTML(messageData) {
             return;
         }
 
-        const isAtBottom = (window.innerHeight + Math.ceil(window.scrollY)) >= document.documentElement.scrollHeight;
+        const isAtBottom = (window.innerHeight + Math.ceil(window.scrollY)) >= document.documentElement.scrollHeight - 70;
 function scrollToBottom2(smooth = false) {
         window.scrollTo({
             top: document.documentElement.scrollHeight,
@@ -823,6 +823,7 @@ function scrollToBottom2(smooth = false) {
 </script>
 </body>
 </html>
+
 
 
 
