@@ -4,6 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Chat Overlay</title>
     <style>
+		    :root {
+      color-scheme: light only !important;
+    }
         /* Animation */
         @keyframes fadeInUp {
             from {
@@ -453,7 +456,7 @@ function handleMessage(messageData) {
     
     // Limit the number of messages on screen to prevent performance issues
     const chatLines = document.querySelectorAll(".chat_line");
-    if (chatLines.length > 150) {
+    if (chatLines.length > 220) {
         chatLines[0].remove();
     }
 
@@ -823,6 +826,7 @@ function scrollToBottom2(smooth = false) {
 </script>
 </body>
 </html>
+
 
 
 
