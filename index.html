@@ -234,7 +234,10 @@ async function getChannelInfo() {
     subscriberBadges = channelData.subscriber_badges;
     subscriberBadges.sort((a, b) => a.months > b.months ? 1 : -1);
 
-    return channelData.chatroom.id;
+    return {
+    chatroomId: channelData.chatroom.id,
+    channelId: channelData.id
+};
 }
 
 
@@ -243,22 +246,22 @@ async function getChannelInfo() {
 //
 
 // Start the process by getting the channel info, then connect to the WebSocket
-getChannelInfo().then(async chatroomId => {
+getChannelInfo().then(async ids => {
 
-    // Load last 20 messages first
+    const chatroomId = ids.chatroomId;
+    const channelId = ids.channelId;
+
     try {
-        const res = await fetch(`https://kick.com/api/v2/channels/${chatroomId}/messages`);
+        const res = await fetch(`https://kick.com/api/v2/channels/${channelId}/messages`);
         const json = await res.json();
 
-        if (json.data && json.data.messages) {
+        if (json.data?.messages) {
 
-            // API gives newest first, reverse so old -> new
             json.data.messages
-                .slice(0, 40)
+                .slice(0, 20)
                 .reverse()
                 .forEach(msg => {
 
-                    // make history message compatible with websocket format
                     handleMessage({
                         id: msg.id,
                         content: msg.content,
@@ -274,7 +277,6 @@ getChannelInfo().then(async chatroomId => {
     }
 
 
-    // Start live chat after history
     main(chatroomId);
 
 });
@@ -859,12 +861,3 @@ function scrollToBottom2(smooth = false) {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
