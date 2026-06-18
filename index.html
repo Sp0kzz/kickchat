@@ -258,7 +258,6 @@ getChannelInfo().then(async ids => {
         if (json.data?.messages) {
 
             json.data.messages
-                .slice(0, 70)
                 .reverse()
                 .forEach(msg => {
 
