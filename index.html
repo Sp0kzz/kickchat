@@ -243,8 +243,40 @@ async function getChannelInfo() {
 //
 
 // Start the process by getting the channel info, then connect to the WebSocket
-getChannelInfo().then(chatroomId => {
+getChannelInfo().then(async chatroomId => {
+
+    // Load last 20 messages first
+    try {
+        const res = await fetch(`https://kick.com/api/v2/channels/${chatroomId}/messages`);
+        const json = await res.json();
+
+        if (json.data && json.data.messages) {
+
+            // API gives newest first, reverse so old -> new
+            json.data.messages
+                .slice(0, 40)
+                .reverse()
+                .forEach(msg => {
+
+                    // make history message compatible with websocket format
+                    handleMessage({
+                        id: msg.id,
+                        content: msg.content,
+                        created_at: msg.created_at,
+                        sender: msg.sender
+                    });
+
+                });
+        }
+
+    } catch(e) {
+        console.log("Failed loading old messages:", e);
+    }
+
+
+    // Start live chat after history
     main(chatroomId);
+
 });
 
 /**
